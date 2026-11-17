@@ -7,6 +7,8 @@ import {
 } from "lucide-react";
 import { combine, prioritise } from "@/lib/audit/score";
 import type { AiResult, Check, CrawlResult, SpeedResult, Status } from "@/lib/audit/types";
+import { getRecaptchaToken } from "@/lib/recaptcha-client";
+import { RecaptchaNotice } from "@/components/RecaptchaNotice";
 
 type Sealed = { payload: string; signature: string };
 type PartState = "idle" | "pending" | "done" | "unavailable";
@@ -139,10 +141,17 @@ export function AuditTool({ delivery = "download" }: { delivery?: Delivery }) {
     }
     setSending("sending");
     try {
+      const recaptchaToken = await getRecaptchaToken("audit_report");
       const res = await fetch("/api/audit/report", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...lead, crawl: sealed.current.crawl, speed: sealed.current.speed ?? null, ai: sealed.current.ai ?? null }),
+        body: JSON.stringify({
+          ...lead,
+          recaptchaToken: recaptchaToken || undefined,
+          crawl: sealed.current.crawl,
+          speed: sealed.current.speed ?? null,
+          ai: sealed.current.ai ?? null,
+        }),
       });
       const type = res.headers.get("content-type") || "";
       if (!res.ok) {
@@ -365,6 +374,7 @@ export function AuditTool({ delivery = "download" }: { delivery?: Delivery }) {
                   <p className="text-center text-xs text-ink-mute">
                     {delivery === "download" ? "We may contact you once about your report. No spam." : "The report is sent to this address. We may contact you once about it. No spam."}{" "}<a href="/privacy-policy" className="underline underline-offset-2 hover:text-brand-700">Privacy Policy</a>.
                   </p>
+                  <RecaptchaNotice />
                 </form>
               )}
             </div>

@@ -36,7 +36,9 @@ export const leadFields = {
     .or(z.literal("")),
   company: text(100).optional(),
   /** Honeypot: real visitors never fill this hidden field. */
-  website_url: z.string().max(0).optional(),
+  website_url: z.string().max(500).optional(),
+  /** Google reCAPTCHA v3/v2 verification token. */
+  recaptchaToken: z.string().optional(),
 };
 
 export const contactSchema = z.object({

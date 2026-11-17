@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { site } from "@/config/site";
+import { getRecaptchaToken } from "@/lib/recaptcha-client";
+import { RecaptchaNotice } from "@/components/RecaptchaNotice";
 
 const SERVICES = ["SEO", "AEO", "GEO", "SEO + AEO + GEO", "Full audit", "Not sure yet"];
 
@@ -16,10 +18,11 @@ export function ContactForm() {
     setState("sending");
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
     try {
+      const recaptchaToken = await getRecaptchaToken("contact");
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, recaptchaToken: recaptchaToken || undefined }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || "Something went wrong. Please try again.");
@@ -83,6 +86,9 @@ export function ContactForm() {
         <button className="btn-primary" disabled={state === "sending"}>
           {state === "sending" ? <><Loader2 size={16} className="animate-spin" aria-hidden /> Sending</> : "Send message"}
         </button>
+      </div>
+      <div className="sm:col-span-2">
+        <RecaptchaNotice />
       </div>
     </form>
   );

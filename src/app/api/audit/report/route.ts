@@ -10,6 +10,7 @@ import { clientIp, fail, leadFields, rateLimit } from "@/lib/http";
 import { saveLead } from "@/lib/leads";
 import { reportDelivery, sendMail } from "@/lib/mailer";
 import { reportEmail } from "@/lib/report-email";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,8 +32,11 @@ export async function POST(req: Request) {
 
   const parsed = body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return fail(parsed.error.issues[0]?.message || "Please check the form and try again.");
-  const { crawl: c, speed: s, ai: a, website_url, ...lead } = parsed.data;
+  const { crawl: c, speed: s, ai: a, website_url, recaptchaToken, ...lead } = parsed.data;
   if (website_url) return fail("Please check the form and try again.");
+
+  const recaptcha = await verifyRecaptcha(recaptchaToken, "audit_report");
+  if (!recaptcha.success) return fail(recaptcha.error || "Security check failed.", 403);
 
   const crawl = unseal<CrawlResult>(c, "crawl");
   if (!crawl) return fail("This audit has expired. Please run the audit again to get your report.", 409);

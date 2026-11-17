@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, CheckCircle2, Loader2 } from "lucide-react";
 import { BUSINESS_TYPES, REVIEW_INCLUDES } from "@/content/enquiry";
+import { getRecaptchaToken } from "@/lib/recaptcha-client";
+import { RecaptchaNotice } from "@/components/RecaptchaNotice";
 
 /** Homepage hero card: "Get your free audit & growth review". Posts to /api/enquiry. */
 export function EnquiryForm({ responseTime }: { responseTime: string }) {
@@ -18,7 +20,12 @@ export function EnquiryForm({ responseTime }: { responseTime: string }) {
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
     setSite(String(data.website || ""));
     try {
-      const res = await fetch("/api/enquiry", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+      const recaptchaToken = await getRecaptchaToken("enquiry");
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...data, recaptchaToken: recaptchaToken || undefined }),
+      });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || "Something went wrong. Please try again.");
       setState("done");
@@ -95,6 +102,9 @@ export function EnquiryForm({ responseTime }: { responseTime: string }) {
                 {state === "sending" ? <><Loader2 size={18} className="animate-spin" aria-hidden /> Sending</> : <>Request free audit <ArrowRight size={18} aria-hidden /></>}
               </button>
               <p className="sm:col-span-2 text-center text-xs text-ink-mute">No spam. We&apos;ll respond within {responseTime}. By submitting, you agree to our <a href="/privacy-policy" className="underline underline-offset-2 hover:text-brand-700">Privacy Policy</a>.</p>
+              <div className="sm:col-span-2">
+                <RecaptchaNotice />
+              </div>
             </form>
           </>
         )}

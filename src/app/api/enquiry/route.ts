@@ -6,6 +6,7 @@ import { checkEmail } from "@/lib/email-check";
 import { clientIp, fail, rateLimit } from "@/lib/http";
 import { saveLead } from "@/lib/leads";
 import { sendMail, smtpConfigured } from "@/lib/mailer";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,6 +25,8 @@ const schema = z.object({
     .refine((v) => !v || /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(v), "Please enter a valid website, e.g. yourbrand.com"),
   /** Honeypot: hidden field real visitors never fill. */
   website_url: z.string().max(500).optional(),
+  /** Google reCAPTCHA v3/v2 verification token. */
+  recaptchaToken: z.string().optional(),
 });
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -54,8 +57,11 @@ export async function POST(req: Request) {
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return fail(parsed.error.issues[0]?.message || "Please check the form and try again.");
-  const { website_url, ...data } = parsed.data;
+  const { website_url, recaptchaToken, ...data } = parsed.data;
   if (website_url) return NextResponse.json({ ok: true }); // bot: pretend success
+
+  const recaptcha = await verifyRecaptcha(recaptchaToken, "enquiry");
+  if (!recaptcha.success) return fail(recaptcha.error || "Security check failed.", 403);
 
   const problem = await checkEmail(data.email);
   if (problem) return fail(problem, 422);
