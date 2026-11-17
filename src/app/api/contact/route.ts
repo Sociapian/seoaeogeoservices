@@ -18,14 +18,14 @@ Thank you for reaching out to ${site.parent.name}. We have received your message
 
 If you have urgent questions, you can also reach us directly at ${site.contact.email} or call ${site.contact.phone}.
 
-${site.name} ${site.byline}
+${site.name}
 ${site.url}`;
 
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#12102a;max-width:560px">
 <p>Hi ${esc(first)},</p>
 <p>Thank you for reaching out to <b>${esc(site.parent.name)}</b>. We have received your message and our team will review it and get back to you within ${esc(site.contact.responseTime)}.</p>
 <p>In the meantime, feel free to explore our free instant audit tool: <a href="${site.url}/free-seo-audit" style="color:#ff6a3d;font-weight:bold;text-decoration:none">${site.url.replace(/^https?:\/\//, "")}/free-seo-audit</a></p>
-<p style="color:#74718f;font-size:13px;margin-top:24px">${esc(site.name)} ${esc(site.byline)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
+<p style="color:#74718f;font-size:13px;margin-top:24px">${esc(site.name)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
 
   await sendMail({
     to,

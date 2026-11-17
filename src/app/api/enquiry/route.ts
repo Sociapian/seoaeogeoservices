@@ -40,14 +40,14 @@ Thanks for requesting a free audit and growth review for ${businessName}. A stra
 
 While you wait, you can run our instant audit: ${site.url}/free-seo-audit
 
-${site.name} ${site.byline}
+${site.name}
 ${site.url}`;
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#12102a;max-width:560px">
 <p>Hi ${esc(first)},</p>
 <p>Thanks for requesting a free audit and growth review for <b>${esc(businessName)}</b>. A strategist from ${esc(site.parent.name)} will review your website and get back to you within ${esc(site.contact.responseTime)}.</p>
 <p>While you wait, you can run our instant audit and see your SEO, AEO and GEO scores:</p>
 <p><a href="${site.url}/free-seo-audit" style="display:inline-block;background:#ff6a3d;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:999px">Run the instant audit</a></p>
-<p style="color:#74718f;font-size:13px">${esc(site.name)} ${esc(site.byline)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
+<p style="color:#74718f;font-size:13px">${esc(site.name)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
   await sendMail({ to, subject: `We've received your request, ${first}`, text, html, replyTo: process.env.LEAD_NOTIFY_TO || site.contact.email });
 }
 

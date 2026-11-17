@@ -20,7 +20,7 @@ export function reportEmail(report: CombinedReport, name: string) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:28px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden">
 <tr><td style="background:#22145c;padding:28px 32px;color:#ffffff">
-<div style="font-size:12px;letter-spacing:2px;font-weight:700;color:#cfc2ff">SEO · AEO · GEO ${esc(site.byline.toUpperCase())}</div>
+<div style="font-size:12px;letter-spacing:2px;font-weight:700;color:#cfc2ff">SEO · AEO · GEO</div>
 <div style="font-size:24px;font-weight:800;margin-top:10px">Your audit report for ${host}</div>
 </td></tr>
 <tr><td style="padding:28px 32px">
@@ -46,7 +46,7 @@ We found ${issues} issues across ${report.crawl.pagesCrawled} pages. Every one i
 
 Book a free strategy call: ${site.url}/contact
 
-${site.name} ${site.byline}`;
+${site.name}`;
 
   return { subject: `Your SEO, AEO & GEO audit report for ${report.host} (${report.score}/100)`, html, text };
 }

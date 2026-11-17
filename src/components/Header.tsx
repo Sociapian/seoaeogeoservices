@@ -1,22 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { nav, site } from "@/config/site";
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5" aria-label={`${site.name} ${site.byline} - home`}>
-      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-accent text-sm font-extrabold text-white">
-        S
-      </span>
+    <Link href="/" className="flex items-center gap-3" aria-label={`${site.name} - home`}>
+      <div className={`relative flex items-center justify-center transition-transform hover:scale-105 ${light ? "rounded-xl bg-white/95 p-1.5 shadow-sm" : ""}`}>
+        <Image
+          src="/images/sociapa-register-logo.png"
+          alt="Sociapa Logo"
+          width={150}
+          height={100}
+          priority
+          className="h-9 w-auto object-contain"
+        />
+      </div>
       <span className="leading-none">
         <span className={`block text-[15px] font-extrabold tracking-tight ${light ? "text-white" : "text-ink"}`}>
           SEO<span className="text-accent">·</span>AEO<span className="text-accent">·</span>GEO
-        </span>
-        <span className={`mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] ${light ? "text-brand-200" : "text-ink-mute"}`}>
-          {site.byline}
         </span>
       </span>
     </Link>

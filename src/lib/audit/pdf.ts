@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type RGB } from "pdf-lib";
 import { site, fullAddress } from "@/config/site";
 import { prioritise } from "./score";
@@ -79,6 +81,16 @@ export async function buildReportPdf(report: CombinedReport, lead: ReportLead): 
   const pdf = await PDFDocument.create();
   const regular = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  let logoImg: any = null;
+  try {
+    const logoPath = path.join(process.cwd(), "public", "images", "sociapa-register-logo.png");
+    if (fs.existsSync(logoPath)) {
+      const logoBytes = fs.readFileSync(logoPath);
+      logoImg = await pdf.embedPng(logoBytes);
+    }
+  } catch (e) {
+    console.warn("[pdf] could not embed logo image:", (e as Error).message);
+  }
   pdf.setTitle(`SEO, AEO & GEO Audit Report - ${clean(report.host)}`);
   pdf.setAuthor(`${site.parent.name} (${site.name})`);
   pdf.setCreator(site.url);
@@ -149,8 +161,16 @@ export async function buildReportPdf(report: CombinedReport, lead: ReportLead): 
   // ================= Cover =================
   page.drawRectangle({ x: 0, y: H - 300, width: W, height: 300, color: C.brandDark });
   page.drawRectangle({ x: 0, y: H - 300, width: W, height: 5, color: C.brand });
-  text(site.name.toUpperCase(), M, H - 62, 11, bold, C.white);
-  text(`${site.byline}  |  ${site.url.replace(/^https?:\/\//, "")}`, M, H - 78, 9, regular, rgb(0.78, 0.74, 1));
+  if (logoImg) {
+    const dims = logoImg.scale(0.3);
+    page.drawRectangle({ x: M - 4, y: H - 72, width: dims.width + 8, height: dims.height + 8, color: C.white });
+    page.drawImage(logoImg, { x: M, y: H - 68, width: dims.width, height: dims.height });
+    text(site.name.toUpperCase(), M + dims.width + 16, H - 54, 11, bold, C.white);
+    text(site.url.replace(/^https?:\/\//, ""), M + dims.width + 16, H - 68, 9, regular, rgb(0.78, 0.74, 1));
+  } else {
+    text(site.name.toUpperCase(), M, H - 62, 11, bold, C.white);
+    text(site.url.replace(/^https?:\/\//, ""), M, H - 78, 9, regular, rgb(0.78, 0.74, 1));
+  }
   text("SEO, AEO & GEO", M, H - 138, 30, bold, C.white);
   text("Audit Report", M, H - 174, 30, bold, C.white);
   text(report.host, M, H - 208, 14, regular, rgb(0.85, 0.82, 1));
@@ -352,7 +372,7 @@ export async function buildReportPdf(report: CombinedReport, lead: ReportLead): 
   const pages = pdf.getPages();
   pages.forEach((p, i) => {
     if (i === 0) return;
-    p.drawText(clean(`${site.name} ${site.byline}  |  Audit of ${report.host}`), { x: M, y: 26, size: 7.5, font: regular, color: C.mute });
+    p.drawText(clean(`${site.name}  |  Audit of ${report.host}`), { x: M, y: 26, size: 7.5, font: regular, color: C.mute });
     const pn = `Page ${i + 1} of ${pages.length}`;
     p.drawText(pn, { x: W - M - regular.widthOfTextAtSize(pn, 7.5), y: 26, size: 7.5, font: regular, color: C.mute });
   });

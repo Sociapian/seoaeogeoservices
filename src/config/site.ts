@@ -9,10 +9,10 @@
 export const site = {
   name: "SEO AEO GEO Services",
   shortName: "SEO·AEO·GEO",
-  byline: "by Sociapa",
+  byline: "",
   url: (process.env.NEXT_PUBLIC_SITE_URL || "https://seoaeogeoservices.com").replace(/\/$/, ""),
   description:
-    "SEO, AEO and GEO services by Sociapa. Rank on Google, win answer boxes and get cited by ChatGPT, Gemini and Perplexity. Get a free SEO audit report in 60 seconds.",
+    "SEO, AEO and GEO services. Rank on Google, win answer boxes and get cited by ChatGPT, Gemini and Perplexity. Get a free SEO audit report in 60 seconds.",
   parent: {
     name: "Sociapa",
     /** Legal entity name for the privacy policy. Change if Sociapa is registered as e.g. "Sociapa ... Pvt. Ltd." */

@@ -3,7 +3,7 @@ import { site } from "@/config/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${site.name} ${site.byline}`,
+    name: site.name,
     short_name: "SEO AEO GEO",
     description: site.description,
     start_url: "/",

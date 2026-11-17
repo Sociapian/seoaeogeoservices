@@ -24,7 +24,7 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 28, fontWeight: 700 }}>
           <span style={{ background: accent, color: "#12102a", padding: "6px 18px", borderRadius: 999 }}>{post?.category ?? "Blog"}</span>
-          <span style={{ color: "#cfc2ff" }}>{site.name} {site.byline}</span>
+          <span style={{ color: "#cfc2ff" }}>{site.name}</span>
         </div>
         <div style={{ fontSize: title.length > 70 ? 58 : 68, fontWeight: 800, lineHeight: 1.08, maxWidth: 1000 }}>{title}</div>
         <div style={{ display: "flex", fontSize: 26, color: "#e7e0ff" }}>{site.url.replace("https://", "")}/blog</div>
