@@ -34,20 +34,21 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 /** Short acknowledgement so the visitor knows the request landed. */
 async function acknowledge(to: string, name: string, businessName: string) {
   const first = name.split(" ")[0];
+  const siteUrl = "https://www.seoaeogeoservices.com";
   const text = `Hi ${first},
 
 Thanks for requesting a free audit and growth review for ${businessName}. A strategist from ${site.parent.name} will review your website and get back to you within ${site.contact.responseTime}.
 
-While you wait, you can run our instant audit: ${site.url}/free-seo-audit
+While you wait, you can run our instant audit: ${siteUrl}/free-seo-audit
 
 ${site.name}
-${site.url}`;
+${siteUrl}`;
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#12102a;max-width:560px">
 <p>Hi ${esc(first)},</p>
 <p>Thanks for requesting a free audit and growth review for <b>${esc(businessName)}</b>. A strategist from ${esc(site.parent.name)} will review your website and get back to you within ${esc(site.contact.responseTime)}.</p>
 <p>While you wait, you can run our instant audit and see your SEO, AEO and GEO scores:</p>
-<p><a href="${site.url}/free-seo-audit" style="display:inline-block;background:#ff6a3d;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:999px">Run the instant audit</a></p>
-<p style="color:#74718f;font-size:13px">${esc(site.name)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
+<p><a href="${siteUrl}/free-seo-audit" style="display:inline-block;background:#ff6a3d;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:999px">Run the instant audit</a></p>
+<p style="color:#74718f;font-size:13px">${esc(site.name)} · ${esc(siteUrl.replace(/^https?:\/\//, ""))}</p></div>`;
   await sendMail({ to, subject: `We've received your request, ${first}`, text, html, replyTo: process.env.LEAD_NOTIFY_TO || site.contact.email });
 }
 

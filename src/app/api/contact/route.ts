@@ -12,6 +12,7 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 
 async function acknowledgeContact(to: string, name: string) {
   const first = name.split(" ")[0];
+  const siteUrl = "https://www.seoaeogeoservices.com";
   const text = `Hi ${first},
 
 Thank you for reaching out to ${site.parent.name}. We have received your message and our team will get back to you within ${site.contact.responseTime}.
@@ -19,13 +20,13 @@ Thank you for reaching out to ${site.parent.name}. We have received your message
 If you have urgent questions, you can also reach us directly at ${site.contact.email} or call ${site.contact.phone}.
 
 ${site.name}
-${site.url}`;
+${siteUrl}`;
 
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#12102a;max-width:560px">
 <p>Hi ${esc(first)},</p>
 <p>Thank you for reaching out to <b>${esc(site.parent.name)}</b>. We have received your message and our team will review it and get back to you within ${esc(site.contact.responseTime)}.</p>
-<p>In the meantime, feel free to explore our free instant audit tool: <a href="${site.url}/free-seo-audit" style="color:#ff6a3d;font-weight:bold;text-decoration:none">${site.url.replace(/^https?:\/\//, "")}/free-seo-audit</a></p>
-<p style="color:#74718f;font-size:13px;margin-top:24px">${esc(site.name)} · ${esc(site.url.replace(/^https?:\/\//, ""))}</p></div>`;
+<p>In the meantime, feel free to explore our free instant audit tool: <a href="${siteUrl}/free-seo-audit" style="color:#ff6a3d;font-weight:bold;text-decoration:none">${siteUrl.replace(/^https?:\/\//, "")}/free-seo-audit</a></p>
+<p style="color:#74718f;font-size:13px;margin-top:24px">${esc(site.name)} · ${esc(siteUrl.replace(/^https?:\/\//, ""))}</p></div>`;
 
   await sendMail({
     to,
