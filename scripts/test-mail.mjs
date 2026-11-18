@@ -30,8 +30,8 @@ const host = process.env.SMTP_HOST;
 const port = Number(process.env.SMTP_PORT || 587);
 const user = process.env.SMTP_USER;
 const pass = process.env.SMTP_PASS;
-const from = process.env.SMTP_FROM || user || "SEO AEO GEO Services <web@sociapa.com>";
-const to = process.env.LEAD_NOTIFY_TO || "web@sociapa.com";
+const from = process.env.SMTP_FROM || user || "SEO AEO GEO Services <mail@sociapa.com>";
+const to = process.env.LEAD_NOTIFY_TO || "mail@sociapa.com";
 
 console.log("==========================================");
 console.log("  Sociapa Mail Configuration Check");
@@ -46,14 +46,14 @@ console.log("------------------------------------------");
 if (!host) {
   console.log("\n[INFO] SMTP is not yet configured in .env.local.");
   console.log("All website leads are currently captured safely in: .data/leads.jsonl\n");
-  console.log("To test live email delivery to web@sociapa.com, update .env.local with your SMTP credentials:");
+  console.log("To test live email delivery to mail@sociapa.com, update .env.local with your SMTP credentials:");
   console.log(`
   SMTP_HOST=smtp.gmail.com            # or your mail server (e.g. Google Workspace, Brevo, AWS SES)
   SMTP_PORT=587
   SMTP_USER=web@sociapa.com
   SMTP_PASS=your-16-char-app-password
-  SMTP_FROM="SEO AEO GEO Services <web@sociapa.com>"
-  LEAD_NOTIFY_TO=web@sociapa.com
+  SMTP_FROM="SEO AEO GEO Services <mail@sociapa.com>"
+  LEAD_NOTIFY_TO=mail@sociapa.com
   REPORT_DELIVERY=email
 `);
   process.exit(0);

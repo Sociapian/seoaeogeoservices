@@ -27,7 +27,7 @@ export const site = {
     teamSize: "40+",
   },
   contact: {
-    email: process.env.LEAD_NOTIFY_TO || "web@sociapa.com",
+    email: process.env.LEAD_NOTIFY_TO || "mail@sociapa.com",
     phone: "+91 120 313 0443",
     whatsapp: "918375828920", // digits only, with country code
     hours: "Monday to Saturday, 10:00 AM to 7:00 PM IST", // not listed on sociapa.com: confirm
