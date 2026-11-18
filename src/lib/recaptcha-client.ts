@@ -53,8 +53,17 @@ function loadRecaptchaScript(siteKey: string): Promise<void> {
   return scriptPromise;
 }
 
+const clean = (val?: string) => {
+  if (!val) return "";
+  let s = val.trim();
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
+};
+
 export async function getRecaptchaToken(action: string): Promise<string | null> {
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const siteKey = clean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
   if (!siteKey) return null;
   if (typeof window === "undefined") return null;
 

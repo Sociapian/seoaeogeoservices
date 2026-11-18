@@ -77,7 +77,11 @@ export async function POST(req: Request) {
   if (!saved) return fail("We could not record your request right now. Please email us directly.", 503);
 
   if (smtpConfigured()) {
-    acknowledge(data.email, data.name, data.businessName).catch((e) => console.error("[enquiry] acknowledgement failed:", e.message));
+    try {
+      await acknowledge(data.email, data.name, data.businessName);
+    } catch (e) {
+      console.error("[enquiry] acknowledgement failed:", (e as Error).message);
+    }
   }
   return NextResponse.json({ ok: true });
 }

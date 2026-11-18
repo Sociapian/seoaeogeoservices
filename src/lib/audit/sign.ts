@@ -7,9 +7,19 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
  * with arbitrary content. Set AUDIT_SECRET in production so every server
  * instance shares the same key.
  */
+const clean = (val?: string) => {
+  if (!val) return "";
+  let s = val.trim();
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
+};
+
 let devSecret: string | null = null;
 function secret(): string {
-  if (process.env.AUDIT_SECRET) return process.env.AUDIT_SECRET;
+  const envSecret = clean(process.env.AUDIT_SECRET);
+  if (envSecret) return envSecret;
   if (process.env.NODE_ENV === "production")
     console.warn("[audit] AUDIT_SECRET is not set. Using a per-process key; set it for multi-instance deployments.");
   return (devSecret ??= randomBytes(32).toString("hex"));

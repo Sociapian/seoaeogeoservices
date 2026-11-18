@@ -59,7 +59,11 @@ export async function POST(req: Request) {
   if (!saved) return fail("We could not record your enquiry right now. Please email us directly.", 503);
 
   if (smtpConfigured()) {
-    acknowledgeContact(data.email, data.name).catch((e) => console.error("[contact] acknowledgement failed:", e.message));
+    try {
+      await acknowledgeContact(data.email, data.name);
+    } catch (e) {
+      console.error("[contact] acknowledgement failed:", (e as Error).message);
+    }
   }
 
   return NextResponse.json({ ok: true });

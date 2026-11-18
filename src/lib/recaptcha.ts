@@ -13,11 +13,20 @@ export interface RecaptchaVerification {
  * If RECAPTCHA_SECRET_KEY is not configured (e.g. in local development before keys are set),
  * it logs a notice and allows the request through with success: true.
  */
+const clean = (val?: string) => {
+  if (!val) return "";
+  let s = val.trim();
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
+};
+
 export async function verifyRecaptcha(
   token: string | undefined | null,
   expectedAction?: string
 ): Promise<RecaptchaVerification> {
-  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  const secret = clean(process.env.RECAPTCHA_SECRET_KEY);
 
   // Graceful fallback: If secret key is not configured, don't block forms
   if (!secret) {
@@ -59,7 +68,7 @@ export async function verifyRecaptcha(
 
     // Check v3 risk score (Google returns score between 0.0 and 1.0)
     if (typeof data.score === "number") {
-      const minScore = Number(process.env.RECAPTCHA_MIN_SCORE || "0.5");
+      const minScore = Number(clean(process.env.RECAPTCHA_MIN_SCORE) || "0.5");
       if (data.score < minScore) {
         console.warn(`[recaptcha] score too low: ${data.score} < ${minScore}`);
         return {
