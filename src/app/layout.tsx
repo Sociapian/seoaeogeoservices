@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "@fontsource-variable/plus-jakarta-sans";
 import "./globals.css";
 import { site } from "@/config/site";
@@ -52,12 +53,20 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim().replace(/^["']|["']$/g, "");
+
   return (
     <html lang="en-IN" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: revealBoot }} />
       </head>
       <body>
+        {recaptchaKey && (
+          <Script
+            src={`https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(recaptchaKey)}`}
+            strategy="lazyOnload"
+          />
+        )}
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-bold">
           Skip to content
         </a>
